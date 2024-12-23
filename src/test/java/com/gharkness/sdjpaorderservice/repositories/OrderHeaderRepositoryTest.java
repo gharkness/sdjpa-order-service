@@ -55,8 +55,8 @@ class OrderHeaderRepositoryTest {
 
         OrderApproval approval = new OrderApproval();
         approval.setApprovedBy("me");
-        OrderApproval savedApproval = orderApprovalRepository.save(approval);
-        orderHeader.setOrderApproval(savedApproval);
+
+        orderHeader.setOrderApproval(approval);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
@@ -65,12 +65,12 @@ class OrderHeaderRepositoryTest {
         assertNotNull(savedOrder);
         assertNotNull(savedOrder.getId());
         assertNotNull(savedOrder.getOrderLines());
-        assertEquals(1, savedOrder.getOrderLines().size());
+        assertEquals(savedOrder.getOrderLines().size(), 1);
 
         OrderHeader fetchedOrder = orderHeaderRepository.getById(savedOrder.getId());
 
         assertNotNull(fetchedOrder);
-        assertEquals(1, fetchedOrder.getOrderLines().size());
+        assertEquals(fetchedOrder.getOrderLines().size(), 1);
     }
 
     @Test
