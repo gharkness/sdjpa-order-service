@@ -1,8 +1,5 @@
 package com.gharkness.sdjpaorderservice.repositories;
-import com.gharkness.sdjpaorderservice.domain.OrderHeader;
-import com.gharkness.sdjpaorderservice.domain.OrderLine;
-import com.gharkness.sdjpaorderservice.domain.Product;
-import com.gharkness.sdjpaorderservice.domain.ProductStatus;
+import com.gharkness.sdjpaorderservice.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,12 @@ class OrderHeaderRepositoryTest {
     OrderHeaderRepository orderHeaderRepository;
 
     @Autowired
+    OrderApprovalRepository orderApprovalRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
+    @Autowired
     ProductRepository productRepository;
 
     Product product;
@@ -38,13 +41,22 @@ class OrderHeaderRepositoryTest {
     @Test
     void testSaveOrderWithLine() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("New Customer");
+        Customer customer = new Customer();
+        customer.setCustomerName("New Customer");
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
 
         OrderLine orderLine = new OrderLine();
         orderLine.setQuantityOrdered(5);
         orderLine.setProduct(product);
 
         orderHeader.addOrderLine(orderLine);
+
+        OrderApproval approval = new OrderApproval();
+        approval.setApprovedBy("me");
+        OrderApproval savedApproval = orderApprovalRepository.save(approval);
+        orderHeader.setOrderApproval(savedApproval);
 
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
@@ -64,7 +76,9 @@ class OrderHeaderRepositoryTest {
     @Test
     void testSaveOrder() {
         OrderHeader orderHeader = new OrderHeader();
-        orderHeader.setCustomer("New Customer");
+        Customer customer = new Customer();
+        customer.setCustomerName("Test Customer");
+        orderHeader.setCustomer(customer);
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         assertNotNull(savedOrder);
