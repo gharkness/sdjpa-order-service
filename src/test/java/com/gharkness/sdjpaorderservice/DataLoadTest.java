@@ -5,6 +5,7 @@ import com.gharkness.sdjpaorderservice.repositories.CustomerRepository;
 import com.gharkness.sdjpaorderservice.repositories.OrderHeaderRepository;
 import com.gharkness.sdjpaorderservice.repositories.ProductRepository;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -36,6 +37,20 @@ public class DataLoadTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Test
+    void testDBLock() {
+        Long id = 55L;
+
+        OrderHeader orderHeader = orderHeaderRepository.findById(id).get();
+
+        Address billTo = new Address();
+        billTo.setAddress("Bill me");
+        orderHeader.setBillToAddress(billTo);
+        orderHeaderRepository.saveAndFlush(orderHeader);
+
+        System.out.println("I updated the order");
+    }
 
     @Test
     void testN_PlusOneProblem() {
