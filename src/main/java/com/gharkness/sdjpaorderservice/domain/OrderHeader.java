@@ -1,6 +1,7 @@
 package com.gharkness.sdjpaorderservice.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,9 +61,11 @@ public class OrderHeader extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
+    @Valid
     @Embedded
     private Address shippingAddress;
 
+    @Valid
     @Embedded
     private Address billToAddress;
 

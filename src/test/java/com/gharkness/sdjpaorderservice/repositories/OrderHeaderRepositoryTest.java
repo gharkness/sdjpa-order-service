@@ -1,6 +1,7 @@
 package com.gharkness.sdjpaorderservice.repositories;
 import com.gharkness.sdjpaorderservice.domain.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,6 +129,34 @@ class OrderHeaderRepositoryTest {
 
            //   entity doesn't throw exception until we try and access the object
            fetchedOrder.getOrderStatus();
+        });
+    }
+
+    @Test
+    void testSaveOrderWithInvalidCustomerName() {
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("This customer name is way too long and should trigger a validation error because it exceeds the maximum length allowed by the @Size annotation");
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            orderHeader.setCustomer(customerRepository.save(customer));
+            orderHeaderRepository.saveAndFlush(orderHeader);
+        });
+    }
+
+    @Test
+    void testSaveOrderWithInvalidAddress() {
+        OrderHeader orderHeader = new OrderHeader();
+        Customer customer = new Customer();
+        customer.setCustomerName("Valid Customer");
+        orderHeader.setCustomer(customerRepository.save(customer));
+
+        Address invalidAddress = new Address();
+        invalidAddress.setCity("This city name is way too long and should trigger a validation error because it exceeds the maximum length allowed by the @Size annotation");
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            orderHeader.setShippingAddress(invalidAddress);
+            orderHeaderRepository.saveAndFlush(orderHeader);
         });
     }
 
