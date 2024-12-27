@@ -76,8 +76,16 @@ class OrderHeaderRepositoryTest {
     void testSaveOrder() {
         OrderHeader orderHeader = new OrderHeader();
         Customer customer = new Customer();
-        customer.setCustomerName("Test Customer");
-        orderHeader.setCustomer(customer);
+        customer.setCustomerName("New Customer");
+        customer.setPhone("012345678");
+
+        Address address = new Address();
+        address.setCity("012345678");
+        customer.setAddress(address);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        orderHeader.setCustomer(savedCustomer);
         OrderHeader savedOrder = orderHeaderRepository.save(orderHeader);
 
         assertNotNull(savedOrder);
@@ -90,6 +98,7 @@ class OrderHeaderRepositoryTest {
         assertNotNull(fetchedOrder.getCreatedDate());
         assertNotNull(fetchedOrder.getLastModifiedDate());
     }
+
 
     @Test
     void testDeleteCascade() {

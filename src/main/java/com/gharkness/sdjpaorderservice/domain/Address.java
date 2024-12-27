@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Objects;
 
@@ -14,9 +15,14 @@ import java.util.Objects;
 @NoArgsConstructor
 @Embeddable
 public class Address {
+
     private String address;
+
+    @Length(max = 30)
     private String city;
+
     private String state;
+
     private String zipCode;
 
     @Override

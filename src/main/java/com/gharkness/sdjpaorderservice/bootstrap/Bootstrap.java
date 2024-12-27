@@ -1,12 +1,63 @@
 package com.gharkness.sdjpaorderservice.bootstrap;
 
+import com.gharkness.sdjpaorderservice.domain.*;
+import com.gharkness.sdjpaorderservice.repositories.CustomerRepository;
+import com.gharkness.sdjpaorderservice.repositories.OrderHeaderRepository;
+import com.gharkness.sdjpaorderservice.services.ProductService;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
+
+    @Autowired
+    OrderHeaderRepository orderHeaderRepository;
+
+    @Autowired
+    BootstrapOrderService bootstrapOrderService;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
+    @Autowired
+    ProductService productService;
+
+    private void updateProduct() {
+        Product product = new Product();
+        product.setDescription("My Product");
+        product.setProductStatus(ProductStatus.NEW);
+
+        Product savedProduct = productService.saveProduct(product);
+
+        Product savedProduct2 = productService.updateQuantityOnHand(savedProduct.getId(), 25);
+
+        System.out.println("Updated Qty: " + savedProduct2.getQuantityOnHand());
+    }
+
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("I was called!");
+
+        updateProduct();
+
+        bootstrapOrderService.readOrderData();
+
+        Customer customer = new Customer();
+        customer.setCustomerName("Testing Version");
+        Customer savedCustomer = customerRepository.save(customer);
+        System.out.println("Version is: " + savedCustomer.getVersion());
+
+        savedCustomer.setCustomerName("Testing Version 2");
+        Customer savedCustomer2 = customerRepository.save(savedCustomer);
+        System.out.println("Version is: " + savedCustomer2.getVersion());
+
+        savedCustomer.setCustomerName("Testing Version 3");
+        Customer savedCustomer3 = customerRepository.save(savedCustomer2);
+        System.out.println("Version is: " + savedCustomer3.getVersion());
+
+        customerRepository.delete(savedCustomer3);
     }
 }

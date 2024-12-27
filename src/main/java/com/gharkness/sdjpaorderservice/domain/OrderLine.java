@@ -2,6 +2,7 @@ package com.gharkness.sdjpaorderservice.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,6 +12,9 @@ import java.util.Objects;
 @Getter
 @Setter
 public class OrderLine extends BaseEntity {
+
+    @Version
+    private Integer version;
 
     private Integer quantityOrdered;
 
